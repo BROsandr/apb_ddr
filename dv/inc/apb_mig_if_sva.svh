@@ -148,6 +148,20 @@
     $error("unstable pwdata during write access phase");
   end
 
+  sva_behav_ustable_psel : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    psel && !pready |-> ##1 psel
+  ) else begin
+    $error("unstable psel");
+  end
+
+  sva_behav_ustable_penable : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    penable && !pready |-> ##1 penable
+  ) else begin
+    $error("unstable penable");
+  end
+
   sva_behav_one_cyc_hand : assert property (
     @(posedge pclk) disable iff (!preset_n)
     handshake |-> ##1 !handshake
