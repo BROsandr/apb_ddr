@@ -222,4 +222,11 @@
 
 // END fsm state transitions
 
+  sva_behav_read_pstrb : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    is_access_phase && !pwrite |-> ~|pstrb
+  ) else begin
+    $error("active pstrb during read transaction");
+  end
+
 // END Behavioral
