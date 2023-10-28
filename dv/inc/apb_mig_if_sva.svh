@@ -113,6 +113,13 @@
     $error("penable after handshake");
   end
 
+  sva_behav_pen_on_hand : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    $fell(penable) |-> $past(handshake)
+  ) else begin
+    $error("penable fell not after handshake");
+  end
+
   sva_behav_ustable_paddr : assert property (
     @(posedge pclk) disable iff (!preset_n)
     is_access_phase |-> $stable(paddr)
@@ -143,7 +150,7 @@
 
   sva_behav_one_cyc_hand : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    $rose(handshake) |-> ##1 $fell(handshake)
+    handshake |-> ##1 !handshake
   ) else begin
     $error("handshake lasts longer than 1 clock cycle");
   end
@@ -154,5 +161,51 @@
   ) else begin
     $info("pslverr_o when not handshake");
   end
+
+// START fsm state transitions
+
+  sva_behav_rose_setup : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    $rose(is_setup_phase) |-> $past(is_idle_phase) || $past(is_access_phase)
+  ) else begin
+    $error("invalid transition into setup_phase");
+  end
+
+  sva_behav_fell_setup : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    is_setup_phase |-> ##1 is_access_phase
+  ) else begin
+    $error("invalid transition from setup_phase");
+  end
+
+  sva_behav_rose_access : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    $rose(is_access_phase) |-> $past(is_setup_phase)
+  ) else begin
+    $error("invalid transition into access_phase");
+  end
+
+  sva_behav_fell_access : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    $fell(is_access_phase) |-> is_setup_phase || is_idle_phase
+  ) else begin
+    $error("invalid transition from access_phase");
+  end
+
+  sva_behav_rose_idle : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    $rose(is_idle_phase) |-> $past(is_access_phase)
+  ) else begin
+    $error("invalid transition into idle_phase");
+  end
+
+  sva_behav_fell_idle : assert property (
+    @(posedge pclk) disable iff (!preset_n)
+    $fell(is_idle_phase) |-> is_setup_phase
+  ) else begin
+    $error("invalid transition from idle_phase");
+  end
+
+// END fsm state transitions
 
 // END Behavioral

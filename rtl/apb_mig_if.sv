@@ -56,6 +56,7 @@ interface apb_mig_if #(
 // START extra signals
   logic is_access_phase = psel && penable;
   logic is_setup_phase  = psel && !penable;
+  logic is_idle_phase   = !psel;
   logic handshake       = is_access_phase && pready;
 // END extra signals
 
