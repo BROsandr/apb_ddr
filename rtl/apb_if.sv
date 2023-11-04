@@ -1,4 +1,4 @@
-interface apb_mig_if #(
+interface apb_if #(
   parameter type addr_t = apb_mig_pkg::apb_addr_t,
   parameter type data_t = apb_mig_pkg::data_t
 ) (
