@@ -1,3 +1,21 @@
+// START sequence
+  sequence idle_phase;
+    !psel;
+  endsequence
+
+  sequence setup_phase;
+    psel && !penable;
+  endsequence
+
+  sequence access_phase;
+    psel && penable;
+  endsequence
+
+  sequence handshake;
+    psel && penable && pready;
+  endsequence
+// END sequence
+
 // START X Check
   sva_apb_x_check_preset_n : assert property (
     @(posedge pclk)
@@ -56,7 +74,7 @@
 
   sva_apb_x_check_pready : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    is_access_phase |-> !$isunknown(pready)
+    access_phase |-> !$isunknown(pready)
   ) else begin
     $error("pready isunknown when access_phase");
   end
@@ -122,28 +140,28 @@
 
   sva_apb_behav_ustable_paddr : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    is_access_phase |-> $stable(paddr)
+    access_phase |-> $stable(paddr)
   ) else begin
     $error("unstable paddr during access phase");
   end
 
   sva_apb_behav_ustable_pwrite : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    is_access_phase |-> $stable(pwrite)
+    access_phase |-> $stable(pwrite)
   ) else begin
     $error("unstable pwrite during access phase");
   end
 
   sva_apb_behav_ustable_pstrb : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    is_access_phase && pwrite |-> $stable(pstrb)
+    access_phase && pwrite |-> $stable(pstrb)
   ) else begin
     $error("unstable pstrb during write access phase");
   end
 
   sva_apb_behav_ustable_pwdata : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    is_access_phase && pwrite |-> $stable(pwdata)
+    access_phase && pwrite |-> $stable(pwdata)
   ) else begin
     $error("unstable pwdata during write access phase");
   end
@@ -178,44 +196,23 @@
 
 // START fsm state transitions
 
-  sva_apb_behav_rose_setup : assert property (
+  sva_apb_behav_setup : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    $rose(is_setup_phase) |-> $past(is_idle_phase) || $past(is_access_phase)
-  ) else begin
-    $error("invalid transition into setup_phase");
-  end
-
-  sva_apb_behav_fell_setup : assert property (
-    @(posedge pclk) disable iff (!preset_n)
-    is_setup_phase |-> ##1 is_access_phase
+    setup_phase |-> ##1 access_phase
   ) else begin
     $error("invalid transition from setup_phase");
   end
 
-  sva_apb_behav_rose_access : assert property (
+  sva_apb_behav_access : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    $rose(is_access_phase) |-> $past(is_setup_phase)
-  ) else begin
-    $error("invalid transition into access_phase");
-  end
-
-  sva_apb_behav_fell_access : assert property (
-    @(posedge pclk) disable iff (!preset_n)
-    $fell(is_access_phase) |-> is_setup_phase || is_idle_phase
+    access_phase |-> ##1 access_phase or setup_phase or idle_phase
   ) else begin
     $error("invalid transition from access_phase");
   end
 
-  sva_apb_behav_rose_idle : assert property (
+  sva_apb_behav_idle : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    $rose(is_idle_phase) |-> $past(is_access_phase)
-  ) else begin
-    $error("invalid transition into idle_phase");
-  end
-
-  sva_apb_behav_fell_idle : assert property (
-    @(posedge pclk) disable iff (!preset_n)
-    $fell(is_idle_phase) |-> is_setup_phase
+    idle_phase |-> ##1 idle_phase or setup_phase
   ) else begin
     $error("invalid transition from idle_phase");
   end
@@ -224,7 +221,7 @@
 
   sva_apb_behav_read_pstrb : assert property (
     @(posedge pclk) disable iff (!preset_n)
-    is_access_phase && !pwrite |-> ~|pstrb
+    access_phase && !pwrite |-> ~|pstrb
   ) else begin
     $error("active pstrb during read transaction");
   end

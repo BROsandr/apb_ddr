@@ -53,12 +53,5 @@ interface apb_mig_if #(
   );
 // END modports
 
-// START extra signals
-  logic is_access_phase = psel && penable;
-  logic is_setup_phase  = psel && !penable;
-  logic is_idle_phase   = !psel;
-  logic handshake       = is_access_phase && pready;
-// END extra signals
-
-  `include "sva/apb_mig_if_sva.svh"
+  `include "apb_mig_if_sva.svh"
 endinterface
