@@ -1,5 +1,5 @@
 package apb_mig_pkg;
-  parameter int unsigned             APB_ADDR_WIDTH = 32;
+  parameter int unsigned             APB_ADDR_WIDTH = 32; // DATA_WIDTH-word address
   typedef logic [APB_ADDR_WIDTH-1:0] apb_addr_t;
 
   parameter int unsigned             MIG_ADDR_WIDTH = 27;
