@@ -7,8 +7,8 @@ package apb_mig_pkg;
 
   parameter int unsigned DATA_WIDTH = 128;
 
-  parameter int unsigned             WSTRB_WIDTH = DATA_WIDTH / $bits(byte);
-  typedef logic [MIG_ADDR_WIDTH-1:0] wstrb_t;
+  parameter int unsigned             STRB_WIDTH = DATA_WIDTH / $bits(byte);
+  typedef logic [MIG_ADDR_WIDTH-1:0] strb_t;
 
   typedef logic [WSTRB_WIDTH-1:0][7:0] data_t;
 endpackage
