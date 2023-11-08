@@ -2,8 +2,8 @@ interface apb_if #(
   parameter type addr_t = apb_mig_pkg::apb_addr_t,
   parameter type data_t = apb_mig_pkg::data_t
 ) (
-  input logic pclk,
-  input logic preset_n
+  input logic pclk_i,
+  input logic preset_ni
 );
   typedef logic [$bits(addr_t)/$bits(byte)-1:0] strb_t;
 
@@ -21,8 +21,8 @@ interface apb_if #(
 
 // START modports
   modport slave (
-    input .pclk_i   (pclk),
-    input .preset_n (preset_n),
+    input .pclk_i   (pclk_i),
+    input .preset_n (preset_ni),
 
     input .paddr_i   (paddr),
     input .pwdata_i  (pwdata),
@@ -37,8 +37,8 @@ interface apb_if #(
   );
 
   modport master (
-    input .pclk_i   (pclk),
-    input .preset_n (preset_n),
+    input .pclk_i   (pclk_i),
+    input .preset_n (preset_ni),
 
     input .prdata_o  (prdata),
     input .pready_o  (pready),
