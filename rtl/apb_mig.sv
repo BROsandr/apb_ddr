@@ -21,7 +21,8 @@ module apb_mig (
   apb2mig_fifo_t apb2mig_fifo_ports;
 
   async_fifo #(
-    .data_t (apb2mig_data_t)
+    .data_t (apb2mig_data_t),
+    .DEPTH  (1)
   ) apb2mig_fifo (
     .clk_r_i   (mig_if            .clk_i),
     .clk_w_i   (apb_if            .pclk_i),
@@ -56,7 +57,8 @@ module apb_mig (
   mig2apb_fifo_t mig2apb_fifo_ports;
 
   async_fifo #(
-    .data_t (mig_data_t)
+    .data_t (mig_data_t),
+    .DEPTH  (1)
   ) mig2apb_fifo (
     .clk_r_i   (mig_if            .clk_i),
     .clk_w_i   (apb_if            .pclk_i),
