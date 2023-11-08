@@ -237,15 +237,15 @@
   end
 
   sva_apb_behav_reset_control : assert property (
-    @(posedge clk)
-    !preset_n |-> {psel, penable} == '0
+    @(posedge pclk_i)
+    !preset_ni |-> {psel, penable} == '0
   ) else begin
-    $error("while !preset_n not all control == '0");
+    $error("while !preset_ni not all control == '0");
   end
 
   sva_apb_behav_control_first_cyc : assert property (
-    @(posedge clk)
-    !arst_n ##1 arst_n |-> {psel, penable} == '0
+    @(posedge pclk_i)
+    !preset_ni ##1 preset_ni |-> {psel, penable} == '0
   ) else begin
     $error("control is not 0 for the first cycle after reset");
   end

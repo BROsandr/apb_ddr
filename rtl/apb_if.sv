@@ -22,7 +22,7 @@ interface apb_if #(
 // START modports
   modport slave (
     input .pclk_i   (pclk_i),
-    input .preset_n (preset_ni),
+    input .preset_ni (preset_ni),
 
     input .paddr_i   (paddr),
     input .pwdata_i  (pwdata),
@@ -38,20 +38,20 @@ interface apb_if #(
 
   modport master (
     input .pclk_i   (pclk_i),
-    input .preset_n (preset_ni),
+    input .preset_ni (preset_ni),
 
     input .prdata_o  (prdata),
     input .pready_o  (pready),
-    input .pslverr_o (pslverr)
+    input .pslverr_o (pslverr),
 
     output .paddr_i   (paddr),
     output .pwdata_i  (pwdata),
     output .pwrite_i  (pwrite),
     output .psel_i    (psel),
     output .penable_i (penable),
-    output .pstrb_i   (pstrb),
+    output .pstrb_i   (pstrb)
   );
 // END modports
 
-  `include "apb_mig_if_sva.svh"
+  `include "apb_if_sva.svh"
 endinterface
