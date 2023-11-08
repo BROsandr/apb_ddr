@@ -24,10 +24,10 @@ module apb_mig (
     .data_t (apb2mig_data_t),
     .DEPTH  (1)
   ) apb2mig_fifo (
-    .clk_r_i   (mig_if            .clk_i),
+    .clk_r_i   (mig_if            .sys_clk_i),
     .clk_w_i   (apb_if            .pclk_i),
-    .rst_r_ni  (mig_if            .rst_ni),
-    .rst_w_ni  (apb_if            .rst_ni),
+    .rst_r_ni  (mig_if            .sys_reset_ni),
+    .rst_w_ni  (apb_if            .preset_ni),
     .w_data_i  (apb2mig_fifo_ports.w_data),
     .w_en_i    (apb2mig_fifo_ports.w_en),
     .r_en_i    (apb2mig_fifo_ports.r_en),
@@ -60,10 +60,10 @@ module apb_mig (
     .data_t (mig_data_t),
     .DEPTH  (1)
   ) mig2apb_fifo (
-    .clk_r_i   (mig_if            .clk_i),
+    .clk_r_i   (mig_if            .sys_clk_i),
     .clk_w_i   (apb_if            .pclk_i),
-    .rst_r_ni  (mig_if            .rst_ni),
-    .rst_w_ni  (apb_if            .rst_ni),
+    .rst_r_ni  (mig_if            .sys_reset_ni),
+    .rst_w_ni  (apb_if            .preset_ni),
     .w_data_i  (mig2apb_fifo_ports.w_data),
     .w_en_i    (mig2apb_fifo_ports.w_en),
     .r_en_i    (mig2apb_fifo_ports.r_en),
