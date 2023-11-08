@@ -39,8 +39,10 @@ module apb_mig (
   logic  is_access_phase;
   assign is_access_phase = apb_if.psel_i && apb_if.penable_i;
 
-  assign apb2mig_fifo_ports.r_en         = mig_if.ready_i  && !apb2mig_fifo_ports.r_empty;
-  assign apb2mig_fifo_ports.w_en         = is_access_phase && !apb2mig_fifo_ports.w_full;
+  assign apb2mig_fifo_ports.r_en         =  ((mig_if.w_ready & apb2mig_fifo_ports.r_data.write) |
+                                             !apb2mig_fifo_ports.r_data.write)                  &
+                                            (mig_if.ready_i & !apb2mig_fifo_ports.r_empty);
+  assign apb2mig_fifo_ports.w_en         = is_access_phase && !apb2mig_fifo_ports.w_full && apb_if.pwrite_i;
   assign apb2mig_fifo_ports.w_data.data  = apb_if.pwdata_i;
   assign apb2mig_fifo_ports.w_data.strb  = apb_if.pstrb_i;
   assign apb2mig_fifo_ports.w_data.addr  = mig_addr_t'(apb_if.paddr_i);
@@ -77,11 +79,15 @@ module apb_mig (
   assign mig2apb_fifo_ports.w_data = mig_if.data_i;
 
   assign mig_if.en_o   = apb2mig_fifo_ports.r_en;
-  assign mig_if.w_en_o = mig_if.en_o    &&  apb2mig_fifo_ports.r_data.write;
-  assign mig_if.data_o = apb2mig_fifo_ports.r_data;
+  assign mig_if.w_en_o = mig_if.en_o && apb2mig_fifo_ports.r_data.write;
+  assign mig_if.data_i = apb2mig_fifo_ports.r_data.data;
+  assign mig_if.strb_i = apb2mig_fifo_ports.r_data.strb;
+  assign mig_if.addr_i = apb2mig_fifo_ports.r_data.addr;
 
-  assign apb_if.pready_o = (w_en && apb2mig_fifo_ports.w_data.write) || mig2apb_fifo_ports.r_en;
-  assign mig_if.prdata_o = mig2apb_fifo_ports.r_data;
-  assign mig_if.pslverr  = 1'b0;
+  assign apb_if.pready_o     = (w_en && apb2mig_fifo_ports.w_data.write) || mig2apb_fifo_ports.r_en;
+  assign mig_if.prdata_o     = mig2apb_fifo_ports.r_data;
+  assign mig_if.pslverr_o    = 1'b0;
+  assign mig_if.sys_clk_o    = apb_if.pclk_i;
+  assign mig_if.sys_reset_no = apb_if.preset_ni;
 
 endmodule
