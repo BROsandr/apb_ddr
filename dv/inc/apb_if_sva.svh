@@ -232,7 +232,7 @@
   initial begin
     sva_apb_behav_bits_prdata_pwdata :  assert($bits(prdata) == $bits(pwdata))
                                     else $error("$bits(prdata) != $bits(pwdata)");
-    sva_apb_behav_bits_pwdata_pstrb :   assert($bits(prdata) / 8. == $real'($bits(pstrb)))
+    sva_apb_behav_bits_pwdata_pstrb :   assert($bits(prdata) / 8.0 == real'($bits(pstrb)))
                                     else $error("$bits(prdata) / 8 != $bits(pstrb)");
   end
 
