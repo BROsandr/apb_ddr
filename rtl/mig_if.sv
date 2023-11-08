@@ -7,8 +7,8 @@ interface mig_if (
 // START protocol signals
   logic      ui_clk;
   logic      ui_reset_n;
-  mig_data_t apb2mig_data;
-  mig_data_t mig2apb_data;
+  data_t     apb2mig_data;
+  data_t     mig2apb_data;
   strb_t     strb;
   mig_addr_t addr;
   logic      w_ready;

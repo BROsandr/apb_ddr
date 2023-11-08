@@ -3,8 +3,10 @@ module apb_mig (
   mig_if.apb   mig_if
 );
 
+  import apb_mig_pkg::*;
+
   typedef struct {
-    mig_data_t data;
+    data_t     data;
     strb_t     strb;
     mig_addr_t addr;
     logic      write;
@@ -49,17 +51,17 @@ module apb_mig (
   assign apb2mig_fifo_ports.w_data.write = apb_if.pwrite_i;
 
   typedef struct {
-    logic      w_full;
-    logic      r_empty;
-    logic      w_en;
-    logic      r_en;
-    mig_data_t r_data;
-    mig_data_t w_data;
+    logic  w_full;
+    logic  r_empty;
+    logic  w_en;
+    logic  r_en;
+    data_t r_data;
+    data_t w_data;
   } mig2apb_fifo_t;
   mig2apb_fifo_t mig2apb_fifo_ports;
 
   async_fifo #(
-    .data_t (mig_data_t),
+    .data_t (data_t),
     .DEPTH  (1)
   ) mig2apb_fifo (
     .clk_r_i   (mig_if            .ui_clk_i),
