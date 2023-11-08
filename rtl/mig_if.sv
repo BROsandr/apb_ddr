@@ -24,7 +24,6 @@ interface mig_if (
     input  .ui_clk_i    (ui_clk),
     input  .ui_reset_ni (ui_reset_n),
     input  .data_i      (mig2apb_data),
-    input  .w_ready_i   (w_ready),
     input  .valid_i     (valid),
     input  .w_ready_i   (w_ready),
     input  .ready_i     (ready),
@@ -48,7 +47,6 @@ interface mig_if (
     output .data_o      (mig2apb_data),
     output .w_ready_o   (w_ready),
     output .valid_o     (valid),
-    output .w_ready_o   (w_ready),
     output .ready_o     (ready)
   );
 // END modports
