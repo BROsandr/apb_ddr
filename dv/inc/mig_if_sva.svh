@@ -84,14 +84,14 @@
 
   sva_mig_behav_read_req : assert property (
     @(posedge ui_clk) disable iff (!ui_reset_n)
-    read_req |-> (!valid until read_req) && 0
+    read_req |-> valid until read_req
   ) else begin
     $error("broken read sequence. No response between two read_req");
   end
 
   sva_mig_behav_valid : assert property (
     @(posedge ui_clk) disable iff (!ui_reset_n)
-    valid |-> (!read_req until valid) && 0
+    valid |-> read_req until valid
   ) else begin
     $error("broken read sequence. No request between two valid");
   end
