@@ -1,5 +1,6 @@
 module apb_mig_sva (
   input async_fifo_t mig2apb_fifo,
+  input logic        is_access_phase,
   mig_if.apb         mig_if,
   apb_if.slave       apb_if
 );
