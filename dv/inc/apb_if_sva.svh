@@ -208,14 +208,14 @@
 
   sva_apb_behav_access : assert property (
     @(posedge pclk_i) disable iff (!preset_ni)
-    access_phase |-> ##1 access_phase or setup_phase or idle_phase
+    access_phase |-> ##1 (access_phase or setup_phase or idle_phase)
   ) else begin
     $error("invalid transition from access_phase");
   end
 
   sva_apb_behav_idle : assert property (
     @(posedge pclk_i) disable iff (!preset_ni)
-    idle_phase |-> ##1 idle_phase or setup_phase
+    idle_phase |-> ##1 (idle_phase or setup_phase)
   ) else begin
     $error("invalid transition from idle_phase");
   end

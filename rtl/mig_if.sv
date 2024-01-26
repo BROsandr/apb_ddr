@@ -16,7 +16,6 @@ interface mig_if (
   logic      en;
   logic      valid;
   logic      ready;
-  logic      w_ready;
 // START protocol signals
 
 // START modports

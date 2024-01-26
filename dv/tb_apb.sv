@@ -1,7 +1,7 @@
-timeunit      1ns;
-timeprecision 1ps;
 
-module tb_abp ();
+module tb_apb ();
+  timeunit      1ns;
+  timeprecision 1ps;
 
   logic                   pclk;
   localparam int unsigned PCLK_PERIOD = 20;
@@ -44,7 +44,7 @@ module tb_abp ();
     if (mig_if.en) begin
       if (mig_if.w_en) begin
         foreach (mem[mig_if.addr][strb_idx]) begin
-          if (mig_if.strb[strb_idx]) mem[mig_if.addr][strb_idx] <= mig_if.apb2mig_data[strb_idx];
+          if (mig_if.strb[strb_idx]) mem[mig_if.addr][strb_idx] = mig_if.apb2mig_data[strb_idx];
         end
       end else begin
         mig_if.mig2apb_data <= mem[mig_if.addr];
@@ -104,7 +104,9 @@ module tb_abp ();
 
             apb_if.penable <= 1'b1;
 
-            while (!apb_if.pready) @(posedge apb_if.pclk_i);
+            do begin
+              @(posedge apb_if.pclk_i);
+            end while (!apb_if.pready);
 
             `_RESET;
           end
@@ -126,7 +128,7 @@ module tb_abp ();
   task monitor();
     forever begin
       @(posedge apb_if.pclk_i);
-      if (handshake && apb_if.pwrite) begin
+      if (handshake && !apb_if.pwrite) begin
         measured_packets.push_back(packet_t'{data: apb_if.prdata,
             pslverr: apb_if.pslverr, default: 'x});
       end
